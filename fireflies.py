@@ -44,6 +44,7 @@ class TSPSolver():
 		self.best_solution = None
 
 	def f(self, individual): # our objective function? lightness?
+		"objective function - describes lightness of firefly"
 		return 1 / single_path_cost(individual, self.weights)
 
 	# def lightness_function(self, gamma):  # ?
@@ -52,6 +53,7 @@ class TSPSolver():
 	# 	return f
 
 	def determine_initial_light_intensities(self):
+		"initializes light intensities"
 		self.light_intensities = [self.f(x) for x in self.population]
 
 	def generate_initial_population(self, number_of_individuals):
@@ -59,6 +61,7 @@ class TSPSolver():
 		self.population = [random_permutation(self.indexes) for i in range(number_of_individuals)]
 
 	def find_global_optimum(self):
+		"finds the brightest firefly"
 		index = self.light_intensities.index(max(self.light_intensities))
 		self.best_solution = self.population[index]
 
@@ -72,11 +75,14 @@ class TSPSolver():
 		
 		subset_of_a = subset_to_change(self.population[a])
 		subset_of_b = subset_to_change(self.population[b])
-		random.shuffle(subset_of_a) # shuffles subset of a in place
-		new_distance, new_info = hamming_distance(subset_of_a, subset_of_b)
-		if new_distance < 2 or new_distance > distance:
+		
+		def shuffle_subset():
 			random.shuffle(subset_of_a) # shuffles subset of a in place
-			new_distance, new_info = hamming_distance(subset_of_a, subset_of_b)
+			return hamming_distance(subset_of_a, subset_of_b)
+		
+		new_distance, new_info = shuffle_subset() 
+		if new_distance < 2 or new_distance > distance: 
+			new_distance, new_info = shuffle_subset()
 
 		changed_individual = []
 		for i in self.indexes:
@@ -85,13 +91,10 @@ class TSPSolver():
 			else:
 				el = subset_of_a.pop(0)
 			changed_individual.append(el)
-		# print(numbers_to_schuffle)
-		# changed_individual = [ for i in self.indexes if not diff_info[i] else ]
 		
-		self.population[a] = changed_individual
+		self.population[a] = tuple(changed_individual)
 
 	def run(self, number_of_individuals=25, alfa=random.random(), beta=1, gamma=1, iterations=200):
-		"http://ijrsat.org/IJRSAT-Vol2-Issue2-0002.pdf"
 		# alfa, beta, gamma - ?
 		# I = self.lightness_function(gamma) ?
 		self.generate_initial_population(number_of_individuals)
