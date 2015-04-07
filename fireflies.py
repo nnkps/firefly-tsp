@@ -81,7 +81,7 @@ class TSPSolver():
 			return hamming_distance(subset_of_a, subset_of_b)
 		
 		new_distance, new_info = shuffle_subset() 
-		if new_distance < 2 or new_distance > distance: 
+		while new_distance < 2 or new_distance > distance: 
 			new_distance, new_info = shuffle_subset()
 
 		changed_individual = []
