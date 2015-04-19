@@ -1,0 +1,41 @@
+/* Required for Angular UI Bootstrap */
+.nav, .pagination, .carousel, .panel-title a {
+  cursor: pointer; }
+
+/* Component SCSS */
+/* Component SCSS */
+#graph-workspace {
+  width: 100%;
+  height: 500px; }
+
+path.link {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px; }
+
+marker#licensing {
+  fill: green; }
+
+path.link.licensing {
+  stroke: green; }
+
+path.link.resolved {
+  stroke-dasharray: 0, 2 1; }
+
+circle {
+  fill: #ccc;
+  stroke: #333;
+  stroke-width: 1.5px; }
+
+text {
+  font: 10px sans-serif;
+  pointer-events: none; }
+
+text.shadow {
+  stroke: #fff;
+  stroke-width: 3px;
+  stroke-opacity: .8; }
+
+/* Add Component SCSS Above */
+
+/*# sourceMappingURL=app.css.map */

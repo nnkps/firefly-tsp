@@ -13,7 +13,8 @@
             alpha: 1,
             beta: 1,
             gamma: 1,
-            iterations: 200
+            iterations: 200,
+            number_of_cities: 20
         };
 
         vm.nodes = [

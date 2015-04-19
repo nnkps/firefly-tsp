@@ -36,10 +36,15 @@
 
                 function tick() {
                     path.attr("d", function (d) {
-                        var dx = d.target.x - d.source.x,
-                            dy = d.target.y - d.source.y,
-                            dr = Math.sqrt(dx * dx + dy * dy);
-                        return "M" + d.source.x + "," + d.source.y + "A" + 0 + "," + 0 + " 0 0,1 " + d.target.x + "," + d.target.y;
+                        var sourceX = Number(d.source.x) * 10;
+                        var sourceY = Number(d.source.y) * 10;
+                        var targetX = Number(d.target.x) * 10;
+                        var targetY = Number(d.target.y) * 10;
+
+                        //var dx = d.target.x - d.source.x,
+                        //    dy = d.target.y - d.source.y,
+                        //    dr = Math.sqrt(dx * dx + dy * dy);
+                        return "M" + sourceX + "," + sourceY + "A" + 0 + "," + 0 + " 0 0,1 " + targetX + "," + targetY;
                     });
                 }
 
@@ -67,10 +72,10 @@
                         .enter().append("svg:circle")
                         .attr("r", 6)
                         .attr("cx", function (d) {
-                            return d.x;
+                            return Number(d.x) * 10;
                         })
                         .attr("cy", function (d) {
-                            return d.y;
+                            return Number(d.y) * 10;
                         });
 
                     tick();
