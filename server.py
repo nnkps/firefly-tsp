@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from time import time
 import hashlib
 import threading
@@ -11,6 +11,7 @@ from fireflies import TSPSolver
 app = Flask(__name__)
 
 state = {}
+STATIC_FOLDER = 'gui-app/build/dist'
 
 @app.route("/run", methods=['POST'])
 def run():
@@ -38,6 +39,14 @@ def get_state(id):
     new_locations = [locations[i] for i in solver.best_solution]
 
     return jsonify(route=map_locations_to_json(new_locations))
+
+@app.route('/')
+def root():
+    return send_from_directory(STATIC_FOLDER, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory(STATIC_FOLDER, path)
 
 def generate_hash():
     return hashlib.md5(str(time())).hexdigest()
