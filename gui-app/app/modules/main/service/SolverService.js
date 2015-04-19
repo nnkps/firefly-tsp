@@ -4,10 +4,16 @@
     SolverService.$inject = ['$resource'];
 
     function SolverService($resource) {
-        return $resource("/run", {}, {
+        return $resource("/:type/:id", {}, {
             run: {
                 method: 'POST',
-                isArray: false
+                isArray: false,
+                params: {type: 'run'}
+            },
+            state: {
+                method: 'GET',
+                isArray: false,
+                params: {type: 'state'}
             }
         });
     }
