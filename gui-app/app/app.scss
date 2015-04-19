@@ -1,0 +1,7 @@
+/* Required for Angular UI Bootstrap */
+.nav, .pagination, .carousel, .panel-title a {
+    cursor: pointer;
+}
+
+/* Component SCSS */
+@import "modules/main/main.scss";

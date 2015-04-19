@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html ng-app="tsp">
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+
+    <title>tsp</title>
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+    <!-- build:css styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:css styles/app.css -->
+    <link rel="stylesheet" type="text/css" href="tmp/app.css"/>
+    <!-- endbuild -->
+
+</head>
+<body>
+
+
+<!-- Static navbar -->
+<nav class="navbar navbar-default navbar-static-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Firefly TSP solver</a>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container">
+    <div ui-view=""></div>
+</div>
+<!-- /container -->
+
+<!-- build:js scripts/vendor.js -->
+<!-- bower:js -->
+<script src="vendor/jquery/dist/jquery.js"></script>
+<script src="vendor/underscore/underscore.js"></script>
+<script src="vendor/bootstrap/dist/js/bootstrap.js"></script>
+<script src="vendor/angular/angular.js"></script>
+<script src="vendor/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="vendor/angular-animate/angular-animate.js"></script>
+<script src="vendor/angular-resource/angular-resource.js"></script>
+<script src="vendor/angular-cookies/angular-cookies.js"></script>
+<script src="vendor/angular-mocks/angular-mocks.js"></script>
+<script src="vendor/angular-ui-utils/ui-utils.js"></script>
+<script src="vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="vendor/moment/moment.js"></script>
+<script src="vendor/d3/d3.js"></script>
+<!-- endbower -->
+<!-- endbuild -->
+
+
+<!-- build:js scripts/app.js -->
+<!-- Main App JS -->
+<script src="app.js"></script>
+<script src="tmp/templates.js"></script>
+<script src="modules/main/main.js"></script>
+<script src="modules/main/partial/index/index.js"></script>
+<script src="modules/main/service/SolverService.js"></script>
+<script src="modules/main/directive/graph/graph.js"></script>
+<!-- Add New Component JS Above -->
+
+<!-- endbuild -->
+
+
+</body>
+</html>

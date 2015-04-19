@@ -1,3 +1,13 @@
 *~
 *.pyc
 __pycache__
+
+gui-app/node_modules
+gui-app/build/*
+gui-app/.sass-cache
+gui-app/app/vendor
+gui-app/*.iml
+gui-app/.idea/
+!gui-app/build/*.config.js
+.DS_Store
+
