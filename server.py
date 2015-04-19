@@ -35,10 +35,10 @@ def run():
 def get_state(id):
     global state
 
-    solver, locations = state[id]['solver'], state[id]['locations']
+    solver, locations, done = state[id]['solver'], state[id]['locations'], state[id]['done']
     new_locations = [locations[i] for i in solver.best_solution]
 
-    return jsonify(route=map_locations_to_json(new_locations))
+    return jsonify(route=map_locations_to_json(new_locations), done=done)
 
 @app.route('/')
 def root():
@@ -56,9 +56,11 @@ def run_in_thread(key, locations, params):
         global state
         state[key] = {
             'solver': TSPSolver(locations),
-            'locations': locations
+            'locations': locations,
+            'done': False
         }
         state[key]['solver'].run(**params)
+        state[key]['done'] = True
 
     t = threading.Thread(target=target, args=(key, locations, params))
     t.start()
