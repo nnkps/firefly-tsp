@@ -72,30 +72,30 @@ class TSPSolver():
 		# will rewrite later
 		distance, diff_info = hamming_distance(self.population[a], self.population[b])
 		subset_to_change = lambda seq: [seq[i] for i in self.indexes if diff_info[i]]
-		
+
 		subset_of_a = subset_to_change(self.population[a])
 		subset_of_b = subset_to_change(self.population[b])
-		
+
 		def shuffle_subset():
 			random.shuffle(subset_of_a) # shuffles subset of a in place
 			return hamming_distance(subset_of_a, subset_of_b)
-		
-		new_distance, new_info = shuffle_subset() 
-		while new_distance < 2 or new_distance > distance: 
+
+		new_distance, new_info = shuffle_subset()
+		while new_distance < 2 or new_distance > distance:
 			new_distance, new_info = shuffle_subset()
 
 		changed_individual = []
 		for i in self.indexes:
 			if not diff_info[i]:
-				el = self.population[a][i]  
+				el = self.population[a][i]
 			else:
 				el = subset_of_a.pop(0)
 			changed_individual.append(el)
-		
+
 		self.population[a] = tuple(changed_individual)
 
-	def run(self, number_of_individuals=25, alfa=random.random(), beta=1, gamma=1, iterations=200):
-		# alfa, beta, gamma - ?
+	def run(self, number_of_individuals=25, alpha=random.random(), beta=1, gamma=1, iterations=200):
+		# alpha, beta, gamma - ?
 		# I = self.lightness_function(gamma) ?
 		self.generate_initial_population(number_of_individuals)
 		self.determine_initial_light_intensities()
@@ -105,7 +105,7 @@ class TSPSolver():
 		self.find_global_optimum()
 		print(self.best_solution)
 		print(single_path_cost(self.best_solution, self.weights))
-		
+
 		individuals_indexes = range(number_of_individuals)
 		n = 0
 		while n < iterations:  # other stop conditions?
