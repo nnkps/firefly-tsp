@@ -6,4 +6,4 @@ class RandomNumberGenerator:
 		pass
 	
 	def GetRandomIntWithLimit(self, limit):
-		return math.floor(random.random() * limit)
+		return int(math.floor(random.random() * limit))

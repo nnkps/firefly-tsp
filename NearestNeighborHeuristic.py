@@ -19,7 +19,7 @@ class NearestNeighborHeuristic():
 			
 			self.InitTabWithValue(isCityAdded, self.numberOfCities, False)
 				
-			firstCityIndex = int(self.random.GetRandomIntWithLimit(self.numberOfCities))
+			firstCityIndex = self.random.GetRandomIntWithLimit(self.numberOfCities)
 			solution.append(self.cities[firstCityIndex])
 			lastCityAdded = self.cities[firstCityIndex]
 			isCityAdded[firstCityIndex] = True
@@ -57,10 +57,10 @@ class NearestNeighborHeuristic():
 			
 if __name__ == '__main__':
 	cities = []
-	for i in xrange(100):
+	for i in xrange(10):
 		cities.append(City(random.random() * 100, random.random() * 100))
 	heuristic = NearestNeighborHeuristic(cities)
-	solutions = heuristic.GenerateSolutions(25)
+	solutions = heuristic.GenerateSolutions(10)
 	for i in solutions:
 		x = []
 		y = []
