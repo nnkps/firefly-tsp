@@ -44,7 +44,7 @@ class NearestInsertionHeuristic():
 				bestDistance = sys.maxint
 				tmpDistance = 0
 				cityToAddIndex = 0
-				cityToAddNearestNeighbourInSolutionIndex = 0
+				
 				for i in xrange(self.numberOfCities):
 					if isCityAdded[i] == False:
 						for j in xrange(numberOfCitiesInSolution):
@@ -52,15 +52,17 @@ class NearestInsertionHeuristic():
 							if tmpDistance < bestDistance:
 								bestDistance = tmpDistance
 								cityToAddIndex = i
-								cityToAddNearestNeighbourInSolutionIndex = j
 				
-				distanceToFirstNeighbour = self.cities[cityToAddIndex].GetDistanceToCity(solution[(cityToAddNearestNeighbourInSolutionIndex + 1) %  numberOfCitiesInSolution])
-				distanceToSecondNeighbour = self.cities[cityToAddIndex].GetDistanceToCity(solution[cityToAddNearestNeighbourInSolutionIndex + -1])
 				indexToInsert = 0
-				if distanceToFirstNeighbour < distanceToSecondNeighbour:
-					indexToInsert = cityToAddNearestNeighbourInSolutionIndex
-				else:
-					indexToInsert = cityToAddNearestNeighbourInSolutionIndex + 1
+				bestGrowth = sys.maxint
+				tmpBestGrowth = 0
+				
+				for i in xrange(numberOfCitiesInSolution):
+					tmpBestGrowth = self.cities[cityToAddIndex].GetDistanceToCity(solution[i - 1]) + self.cities[cityToAddIndex].GetDistanceToCity(solution[i]) - solution[i - 1].GetDistanceToCity(solution[i])
+					if tmpBestGrowth < bestGrowth:
+						indexToInsert = i
+						bestGrowth = tmpBestGrowth
+					
 					
 				solution.insert(indexToInsert, self.cities[cityToAddIndex])
 				isCityAdded[cityToAddIndex] = True
@@ -85,7 +87,7 @@ class NearestInsertionHeuristic():
 				#plt.plot(x2, y2, 'ro')
 				#plt.show()
 							
-			solution.append(solution[0])
+			#solution.append(solution[0])
 			solutions.append(solution)
 			
 		return solutions
@@ -125,7 +127,7 @@ class NearestInsertionHeuristic():
 		
 if __name__ == '__main__':
 	cities = []
-	for i in xrange(10):
+	for i in xrange(50):
 		cities.append(City(random.random() * 100, random.random() * 100))
 	heuristic = NearestInsertionHeuristic(cities)
 	solutions = heuristic.GenerateSolutions(10)

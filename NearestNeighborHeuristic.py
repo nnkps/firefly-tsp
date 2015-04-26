@@ -40,7 +40,7 @@ class NearestNeighborHeuristic():
 				lastCityAdded = self.cities[bestCityIndex]
 				isCityAdded[bestCityIndex] = True
 				
-			solution.append(self.cities[firstCityIndex])
+			#solution.append(self.cities[firstCityIndex])
 			solutions.append(solution)
 			
 		return solutions
