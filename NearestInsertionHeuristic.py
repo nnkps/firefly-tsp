@@ -1,17 +1,16 @@
 from City import *
-from RandomNumberGenerator import *
+import random
 import sys
 import matplotlib.pyplot as plt
 
 class NearestInsertionHeuristic():
 	def __init__(self, cities):
 		self.cities = cities
-		self.random = RandomNumberGenerator()
 		self.numberOfCities = len(cities)
 		
 	def GenerateSolutions(self, numberOfSolutions):
 		solutions = []
-		for i in xrange(numberOfSolutions):
+		for i in range(numberOfSolutions):
 			solution = []
 			isCityAdded = []
 			numberOfCitiesInSolution = 3
@@ -29,7 +28,7 @@ class NearestInsertionHeuristic():
 				#x.append(j.x)
 				#y.append(j.y)
 				
-			#for i in xrange(self.numberOfCities):
+			#for i in range(self.numberOfCities):
 				#if isCityAdded[i] == False:
 					#x2.append(self.cities[i].x)
 					#y2.append(self.cities[i].y)
@@ -41,23 +40,23 @@ class NearestInsertionHeuristic():
 			#plt.show()
 						
 			while self.AllCitiesAdded(isCityAdded) == False:
-				bestDistance = sys.maxint
+				bestDistance = sys.maxsize
 				tmpDistance = 0
 				cityToAddIndex = 0
 				
-				for i in xrange(self.numberOfCities):
+				for i in range(self.numberOfCities):
 					if isCityAdded[i] == False:
-						for j in xrange(numberOfCitiesInSolution):
+						for j in range(numberOfCitiesInSolution):
 							tmpDistance = self.cities[i].GetDistanceToCity(solution[j])
 							if tmpDistance < bestDistance:
 								bestDistance = tmpDistance
 								cityToAddIndex = i
 				
 				indexToInsert = 0
-				bestGrowth = sys.maxint
+				bestGrowth = sys.maxsize
 				tmpBestGrowth = 0
 				
-				for i in xrange(numberOfCitiesInSolution):
+				for i in range(numberOfCitiesInSolution):
 					tmpBestGrowth = self.cities[cityToAddIndex].GetDistanceToCity(solution[i - 1]) + self.cities[cityToAddIndex].GetDistanceToCity(solution[i]) - solution[i - 1].GetDistanceToCity(solution[i])
 					if tmpBestGrowth < bestGrowth:
 						indexToInsert = i
@@ -76,7 +75,7 @@ class NearestInsertionHeuristic():
 					#x.append(j.x)
 					#y.append(j.y)
 					
-				#for i in xrange(self.numberOfCities):
+				#for i in range(self.numberOfCities):
 					#if isCityAdded[i] == False:
 						#x2.append(self.cities[i].x)
 						#y2.append(self.cities[i].y)
@@ -99,13 +98,13 @@ class NearestInsertionHeuristic():
 		return True
 		
 	def InitTabWithValue(self, tab, tabLength, value):
-		for i in xrange(tabLength):
+		for i in range(tabLength):
 			tab.append(value)
 			
 	def PutThreeRandomCitiesToTheBack(self):
-		firstIndex = self.random.GetRandomIntWithLimit(self.numberOfCities)
-		secondIndex = self.random.GetRandomIntWithLimit(self.numberOfCities - 1)
-		thirdIndex = self.random.GetRandomIntWithLimit(self.numberOfCities - 2)
+		firstIndex = random.randint(0, self.numberOfCities - 1)
+		secondIndex = random.randint(0, self.numberOfCities - 2)
+		thirdIndex = random.randint(0, self.numberOfCities - 3)
 		
 		self.SwapCitiesUnderIndexes(firstIndex, self.numberOfCities - 1)
 		self.SwapCitiesUnderIndexes(secondIndex, self.numberOfCities - 2)
@@ -127,7 +126,7 @@ class NearestInsertionHeuristic():
 		
 if __name__ == '__main__':
 	cities = []
-	for i in xrange(50):
+	for i in range(50):
 		cities.append(City(random.random() * 100, random.random() * 100))
 	heuristic = NearestInsertionHeuristic(cities)
 	solutions = heuristic.GenerateSolutions(10)

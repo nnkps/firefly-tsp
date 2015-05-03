@@ -1,17 +1,16 @@
 from City import *
-from RandomNumberGenerator import *
+import random
 import sys
 import matplotlib.pyplot as plt
 
 class NearestNeighborHeuristic():
 	def __init__(self, cities):
 		self.cities = cities
-		self.random = RandomNumberGenerator()
 		self.numberOfCities = len(cities)
 
 	def GenerateSolutions(self, numberOfSolutions):
 		solutions = []
-		for i in xrange(numberOfSolutions):
+		for i in range(numberOfSolutions):
 			solution = []
 			isCityAdded = []
 			firstCityIndex = 0
@@ -19,17 +18,17 @@ class NearestNeighborHeuristic():
 			
 			self.InitTabWithValue(isCityAdded, self.numberOfCities, False)
 				
-			firstCityIndex = self.random.GetRandomIntWithLimit(self.numberOfCities)
+			firstCityIndex = random.randint(0, self.numberOfCities - 1)
 			solution.append(self.cities[firstCityIndex])
 			lastCityAdded = self.cities[firstCityIndex]
 			isCityAdded[firstCityIndex] = True
 			
 			while self.AllCitiesAdded(isCityAdded) == False:
-				bestDistance = sys.maxint
+				bestDistance = sys.maxsize
 				tmpDistance = 0
 				bestCityIndex = 0
 				
-				for i in xrange(self.numberOfCities):
+				for i in range(self.numberOfCities):
 					if isCityAdded[i] == False:
 						tmpDistance = self.cities[i].GetDistanceToCity(lastCityAdded)
 						if tmpDistance < bestDistance:
@@ -52,12 +51,12 @@ class NearestNeighborHeuristic():
 		return True
 		
 	def InitTabWithValue(self, tab, tabLength, value):
-		for i in xrange(tabLength):
+		for i in range(tabLength):
 			tab.append(value)
 			
 if __name__ == '__main__':
 	cities = []
-	for i in xrange(10):
+	for i in range(10):
 		cities.append(City(random.random() * 100, random.random() * 100))
 	heuristic = NearestNeighborHeuristic(cities)
 	solutions = heuristic.GenerateSolutions(10)
