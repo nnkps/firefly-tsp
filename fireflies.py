@@ -24,12 +24,16 @@ def single_path_cost(path, distances):
 	path = path + path[:1]
 	return sum(distances[ path[i] ][ path[i + 1] ] for i in range(len(path) - 1))
 
-def hamming_distance(a, b):
+def hamming_distance_with_info(a, b):
 	"return number of places and places where two sequences differ"
 	assert len(a) == len(b)
 	ne = operator.ne
 	differ = list(map(ne, a, b))
 	return sum(differ), differ
+
+def hamming_distance(a, b):
+	dist, info = hamming_distance_with_info(a, b)
+	return dist
 
 # def hamming_distance(a, b):
 # 	"return number of places where two sequences differ"
@@ -72,11 +76,15 @@ class TSPSolver():
 		# first_heuristic_part = self.first_heuristic.generate_population(first_heuristic_part_limit)
 		# second_heuristic_part = self.second_heuristic.generate_population(second_heuristic_part_limit)
 		# random_part = [random_permutation(self.indexes) for i in range(random_part_limit)]
+		
+		first_heuristic_part_limit = int(0.7 * number_of_individuals)
+		random_part_limit = number_of_individuals - first_heuristic_part_limit
+		first_heuristic_part = self.first_heuristic.generate_population(first_heuristic_part_limit)
+		random_part = [random_permutation(self.indexes) for i in range(random_part_limit)]
 
-		random_part = [random_permutation(self.indexes) for i in range(number_of_individuals)]
-
+		self.population = random_part + first_heuristic_part
+		
 		# self.population = random_part + first_heuristic_part + second_heuristic_part
-		self.population = random_part
 
 	def find_global_optimum(self):
 		"finds the brightest firefly"
@@ -88,7 +96,7 @@ class TSPSolver():
 		"moving a solution to b solution"
 		# UGLY :(
 		# will rewrite later
-		distance, diff_info = hamming_distance(self.population[a], self.population[b])
+		distance, diff_info = hamming_distance_with_info(self.population[a], self.population[b])
 		subset_to_change = lambda seq: [seq[i] for i in self.indexes if diff_info[i]]
 
 		subset_of_a = subset_to_change(self.population[a])
@@ -96,7 +104,7 @@ class TSPSolver():
 
 		def shuffle_subset():
 			random.shuffle(subset_of_a) # shuffles subset of a in place
-			return hamming_distance(subset_of_a, subset_of_b)
+			return hamming_distance_with_info(subset_of_a, subset_of_b)
 
 		new_distance, new_info = shuffle_subset()
 		while new_distance < 2 or new_distance > distance:
@@ -129,7 +137,7 @@ class TSPSolver():
 		while n < iterations:  # other stop conditions?
 			for i in individuals_indexes:
 				for j in individuals_indexes:
-					if self.light_intensities[i] < self.light_intensities[j]:
+					if self.light_intensities[i] < self.light_intensities[j] and hamming_distance(self.population[i], self.population[j]) < 10:
 						self.move_individual(i, j) # move i to j
 						self.light_intensities[i] = self.f(self.population[i])
 			self.find_global_optimum()

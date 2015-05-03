@@ -1,12 +1,15 @@
 from City import *
-import random
 import sys
+import random
+from collections import namedtuple
 
 class NearestInsertionHeuristic():
 	def __init__(self, cities):
 		self.cities = cities
 		self.numberOfCities = len(cities)
-		
+		for i in range(self.numberOfCities):
+			self.cities[i].index = i
+
 	def GenerateSolutions(self, numberOfSolutions):
 		solutions = []
 		for i in range(numberOfSolutions):
@@ -86,7 +89,7 @@ class NearestInsertionHeuristic():
 				#plt.show()
 							
 			#solution.append(solution[0])
-			solutions.append(solution)
+			solutions.append([elem.index for elem in solution])
 			
 		return solutions
 			

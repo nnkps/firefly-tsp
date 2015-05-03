@@ -18,7 +18,8 @@ class NearestNeighborHeuristic():
 			self.InitTabWithValue(isCityAdded, self.numberOfCities, False)
 				
 			firstCityIndex = random.randint(0, self.numberOfCities - 1)
-			solution.append(self.cities[firstCityIndex])
+			# solution.append(self.cities[firstCityIndex])
+			solution.append(firstCityIndex)
 			lastCityAdded = self.cities[firstCityIndex]
 			isCityAdded[firstCityIndex] = True
 			
@@ -34,7 +35,8 @@ class NearestNeighborHeuristic():
 							bestDistance = tmpDistance
 							bestCityIndex = i
 							
-				solution.append(self.cities[bestCityIndex])
+				# solution.append(self.cities[bestCityIndex])
+				solution.append(bestCityIndex)
 				lastCityAdded = self.cities[bestCityIndex]
 				isCityAdded[bestCityIndex] = True
 				
