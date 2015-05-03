@@ -7,7 +7,8 @@ class NearestInsertion:
 		self.oldni = NearestInsertionHeuristic(cities)
 
 	def generate_population(self, limit):
-		return self.oldni.GenerateSolutions(limit)
+		population_of_solutions = self.oldni.GenerateSolutions(limit)
+		return [[city.index for city in solution] for solution in population_of_solutions]
 
 
 class NearestNeighbour:

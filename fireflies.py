@@ -69,22 +69,22 @@ class TSPSolver():
 		# TODO: this part is wrong!
 		# heuristics return solutions, while we need list of permutations of indexes
 
-		# first_heuristic_part_limit = int(0.2 * number_of_individuals)
-		# second_heuristic_part_limit = int(0.7 * number_of_individuals)
-		# random_part_limit = number_of_individuals - first_heuristic_part_limit - second_heuristic_part_limit 
+		first_heuristic_part_limit = int(0.2 * number_of_individuals)
+		second_heuristic_part_limit = int(0.7 * number_of_individuals)
+		random_part_limit = number_of_individuals - first_heuristic_part_limit - second_heuristic_part_limit 
 		
-		# first_heuristic_part = self.first_heuristic.generate_population(first_heuristic_part_limit)
-		# second_heuristic_part = self.second_heuristic.generate_population(second_heuristic_part_limit)
-		# random_part = [random_permutation(self.indexes) for i in range(random_part_limit)]
-		
-		first_heuristic_part_limit = int(0.7 * number_of_individuals)
-		random_part_limit = number_of_individuals - first_heuristic_part_limit
 		first_heuristic_part = self.first_heuristic.generate_population(first_heuristic_part_limit)
+		second_heuristic_part = self.second_heuristic.generate_population(second_heuristic_part_limit)
 		random_part = [random_permutation(self.indexes) for i in range(random_part_limit)]
-
-		self.population = random_part + first_heuristic_part
 		
-		# self.population = random_part + first_heuristic_part + second_heuristic_part
+		# first_heuristic_part_limit = int(0.7 * number_of_individuals)
+		# random_part_limit = number_of_individuals - first_heuristic_part_limit
+		# first_heuristic_part = self.first_heuristic.generate_population(first_heuristic_part_limit)
+		# random_part = [random_permutation(self.indexes) for i in range(random_part_limit)]
+
+		# self.population = random_part + first_heuristic_part
+		
+		self.population = random_part + first_heuristic_part + second_heuristic_part
 
 	def find_global_optimum(self):
 		"finds the brightest firefly"

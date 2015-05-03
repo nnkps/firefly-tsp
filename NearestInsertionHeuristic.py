@@ -1,11 +1,11 @@
 from City import *
 import sys
 import random
-from collections import namedtuple
+# import matplotlib.pyplot as plt
 
 class NearestInsertionHeuristic():
 	def __init__(self, cities):
-		self.cities = cities
+		self.cities = [city for city in cities]
 		self.numberOfCities = len(cities)
 		for i in range(self.numberOfCities):
 			self.cities[i].index = i
@@ -89,7 +89,8 @@ class NearestInsertionHeuristic():
 				#plt.show()
 							
 			#solution.append(solution[0])
-			solutions.append([elem.index for elem in solution])
+			# solutions.append([elem.index for elem in solution])
+			solutions.append(solution)
 			
 		return solutions
 			
