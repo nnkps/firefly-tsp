@@ -3,11 +3,13 @@
 from fireflies import *
 import random
 import matplotlib.pyplot as plt
+from City import *
 
 def draw(points):
 	points = list(points)
 	points = points + points[:1]
-	(x, y) = zip(*points)
+	cities = map(lambda i: (i.x, i.y), points)
+	(x, y) = zip(*cities)
 	plt.scatter(x, y)
 	plt.plot(x, y)
 	plt.show()
@@ -15,7 +17,7 @@ def draw(points):
 if __name__ == '__main__':
 	number_of_points = int(input('Number of points: '))
 	next_random = lambda: random.random() * 100
-	locations = [ (next_random(), next_random()) for i in range(number_of_points) ]
+	locations = [ City(next_random(), next_random()) for i in range(number_of_points) ]
 	draw(locations)
 
 	solver = TSPSolver(locations)

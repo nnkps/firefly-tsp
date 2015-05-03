@@ -1,7 +1,6 @@
 from City import *
 import random
 import sys
-import matplotlib.pyplot as plt
 
 class NearestInsertionHeuristic():
 	def __init__(self, cities):
@@ -123,19 +122,3 @@ class NearestInsertionHeuristic():
 		isCityAdded[self.numberOfCities - 1] = True
 		isCityAdded[self.numberOfCities - 2] = True
 		isCityAdded[self.numberOfCities - 3] = True
-		
-if __name__ == '__main__':
-	cities = []
-	for i in range(50):
-		cities.append(City(random.random() * 100, random.random() * 100))
-	heuristic = NearestInsertionHeuristic(cities)
-	solutions = heuristic.GenerateSolutions(10)
-	for i in solutions:
-		x = []
-		y = []
-		for j in i:
-			x.append(j.x)
-			y.append(j.y)
-		plt.scatter(x, y)
-		plt.plot(x, y)
-		plt.show()

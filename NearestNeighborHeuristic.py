@@ -1,7 +1,6 @@
 from City import *
 import random
 import sys
-import matplotlib.pyplot as plt
 
 class NearestNeighborHeuristic():
 	def __init__(self, cities):
@@ -53,19 +52,3 @@ class NearestNeighborHeuristic():
 	def InitTabWithValue(self, tab, tabLength, value):
 		for i in range(tabLength):
 			tab.append(value)
-			
-if __name__ == '__main__':
-	cities = []
-	for i in range(10):
-		cities.append(City(random.random() * 100, random.random() * 100))
-	heuristic = NearestNeighborHeuristic(cities)
-	solutions = heuristic.GenerateSolutions(10)
-	for i in solutions:
-		x = []
-		y = []
-		for j in i:
-			x.append(j.x)
-			y.append(j.y)
-		plt.scatter(x, y)
-		plt.plot(x, y)
-		plt.show()

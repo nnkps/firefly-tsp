@@ -2,10 +2,11 @@ import random
 import math
 import itertools
 import operator
+from heuristics import NearestInsertion, NearestNeighbour
 
 def cartesian_distance(a, b):
-	"a and b should be tuples, computes distance between two points"
-	return math.sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2)
+	"a and b should be tuples, computes distance between two cities"
+	return math.sqrt((a.x - b.x)**2 + (a.y - b.y)**2)
 
 def compute_distances_matrix(locations):
 	"returns array with distances for given points"
@@ -37,11 +38,14 @@ def hamming_distance(a, b):
 
 class TSPSolver():
 	def __init__(self, points):
+		"points is list of objects of type City"
 		self.weights = compute_distances_matrix(points)
 		self.indexes = range(len(points))
 		self.population = []
 		self.light_intensities = []
 		self.best_solution = None
+		self.first_heuristic = NearestNeighbour(points)
+		self.second_heuristic = NearestInsertion(points)
 
 	def f(self, individual): # our objective function? lightness?
 		"objective function - describes lightness of firefly"
@@ -58,7 +62,21 @@ class TSPSolver():
 
 	def generate_initial_population(self, number_of_individuals):
 		"generates population of permutation of individuals"
-		self.population = [random_permutation(self.indexes) for i in range(number_of_individuals)]
+		# TODO: this part is wrong!
+		# heuristics return solutions, while we need list of permutations of indexes
+
+		# first_heuristic_part_limit = int(0.2 * number_of_individuals)
+		# second_heuristic_part_limit = int(0.7 * number_of_individuals)
+		# random_part_limit = number_of_individuals - first_heuristic_part_limit - second_heuristic_part_limit 
+		
+		# first_heuristic_part = self.first_heuristic.generate_population(first_heuristic_part_limit)
+		# second_heuristic_part = self.second_heuristic.generate_population(second_heuristic_part_limit)
+		# random_part = [random_permutation(self.indexes) for i in range(random_part_limit)]
+
+		random_part = [random_permutation(self.indexes) for i in range(number_of_individuals)]
+
+		# self.population = random_part + first_heuristic_part + second_heuristic_part
+		self.population = random_part
 
 	def find_global_optimum(self):
 		"finds the brightest firefly"
