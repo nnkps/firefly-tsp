@@ -49,8 +49,9 @@ def get_state(id):
 
     solver, locations, done = state[id]['solver'], state[id]['locations'], state[id]['done']
     new_locations = [locations[i] for i in solver.best_solution]
+    route_cost = solver.best_solution_cost
 
-    return jsonify(route=map_locations_to_json(new_locations), done=done)
+    return jsonify(route=map_locations_to_json(new_locations), route_cost=route_cost, done=done)
 
 def generate_hash():
     return hashlib.md5(str(time())).hexdigest()

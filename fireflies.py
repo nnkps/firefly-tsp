@@ -48,6 +48,7 @@ class TSPSolver():
 		self.population = []
 		self.light_intensities = []
 		self.best_solution = None
+		self.best_solution_cost = None
 
 		self.first_heuristic = NearestNeighbour(points)
 		self.second_heuristic = NearestInsertion(points)
@@ -91,7 +92,7 @@ class TSPSolver():
 		"finds the brightest firefly"
 		index = self.light_intensities.index(max(self.light_intensities))
 		self.best_solution = self.population[index]
-
+		self.best_solution_cost = single_path_cost(self.best_solution, self.weights)
 
 	def move_individual(self, a, b):
 		"moving a solution to b solution"
