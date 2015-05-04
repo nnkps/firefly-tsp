@@ -36,6 +36,9 @@ def run():
     tsplib_data = params.pop('tsplib_data')
     locations = parse_tsplib_data(tsplib_data)
 
+    heuristics = params.pop('heurestics')
+    params['heuristics_percents'] = (heuristics['nearest_neighbour'], heuristics['nearest_insertion'], heuristics['random'])
+
     run_in_thread(id, locations, params)
 
     return jsonify(id=id, route=map_locations_to_json(locations))

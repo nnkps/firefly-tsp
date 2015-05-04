@@ -48,6 +48,7 @@ class TSPSolver():
 		self.population = []
 		self.light_intensities = []
 		self.best_solution = None
+
 		self.first_heuristic = NearestNeighbour(points)
 		self.second_heuristic = NearestInsertion(points)
 
@@ -64,13 +65,13 @@ class TSPSolver():
 		"initializes light intensities"
 		self.light_intensities = [self.f(x) for x in self.population]
 
-	def generate_initial_population(self, number_of_individuals):
+	def generate_initial_population(self, number_of_individuals, heuristics_percents):
 		"generates population of permutation of individuals"
 		# TODO: this part is wrong!
 		# heuristics return solutions, while we need list of permutations of indexes
 
-		first_heuristic_part_limit = int(0.2 * number_of_individuals)
-		second_heuristic_part_limit = int(0.7 * number_of_individuals)
+		first_heuristic_part_limit = int(heuristics_percents[0] * number_of_individuals)
+		second_heuristic_part_limit = int(heuristics_percents[1] * number_of_individuals)
 		random_part_limit = number_of_individuals - first_heuristic_part_limit - second_heuristic_part_limit
 
 		first_heuristic_part = self.first_heuristic.generate_population(first_heuristic_part_limit)
@@ -120,8 +121,8 @@ class TSPSolver():
 
 		self.population[a] = tuple(changed_individual)
 
-	def run(self, number_of_individuals=25, iterations=200):
-		self.generate_initial_population(number_of_individuals)
+	def run(self, number_of_individuals=25, iterations=200, heuristics_percents=(0.2, 0.7, 0.1)):
+		self.generate_initial_population(number_of_individuals, heuristics_percents)
 		self.determine_initial_light_intensities()
 
 		print('Population of {0} individuals:'.format(number_of_individuals))
