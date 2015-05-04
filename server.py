@@ -76,7 +76,7 @@ def map_locations_to_json(locations):
 def parse_tsplib_data(data):
     def parse_line(line):
         line_split = line.split()
-        return City(line_split[1], line_split[2])
+        return City(float(line_split[1]), float(line_split[2]))
 
     lines = data.strip().split('\n')[6:-1]
     return map(parse_line, lines)
