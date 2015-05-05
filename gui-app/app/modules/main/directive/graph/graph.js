@@ -34,10 +34,10 @@
 
                 function tick() {
                     path.attr("d", function (d) {
-                        var sourceX = Number(d.source.x) * 3;
-                        var sourceY = Number(d.source.y) * 3;
-                        var targetX = Number(d.target.x) * 3;
-                        var targetY = Number(d.target.y) * 3;
+                        var sourceX = Number(d.source.x) * 4;
+                        var sourceY = Number(d.source.y) * 4;
+                        var targetX = Number(d.target.x) * 4;
+                        var targetY = Number(d.target.y) * 4;
 
                         //var dx = d.target.x - d.source.x,
                         //    dy = d.target.y - d.source.y,
@@ -70,10 +70,10 @@
                         .enter().append("svg:circle")
                         .attr("r", 6)
                         .attr("cx", function (d) {
-                            return Number(d.x) * 3;
+                            return Number(d.x) * 4;
                         })
                         .attr("cy", function (d) {
-                            return Number(d.y) * 3;
+                            return Number(d.y) * 4;
                         });
 
                     tick();

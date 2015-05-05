@@ -77,7 +77,7 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"panel panel-default\">\n" +
     "                    <div class=\"panel-heading\">\n" +
     "                        <span>Configuration {{$index + 1}}</span>\n" +
-    "                        <span class=\"label label-danger\">Solution: {{r.route_cost}}</span>\n" +
+    "                        <span class=\"label label-danger\">Solution: {{r.route_cost}}, Iteration: {{r.iteration}}</span>\n" +
     "                        <span class=\"label label-default\" ng-show=\"!r.done\">Running...</span>\n" +
     "                    </div>\n" +
     "                    <div class=\"panel-body\">\n" +

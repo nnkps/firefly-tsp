@@ -49,6 +49,7 @@ class TSPSolver():
 		self.light_intensities = []
 		self.best_solution = None
 		self.best_solution_cost = None
+		self.n = None
 
 		self.first_heuristic = NearestNeighbour(points)
 		self.second_heuristic = NearestInsertion(points)
@@ -105,7 +106,10 @@ class TSPSolver():
 		subset_of_b = subset_to_change(self.population[b])
 
 		def shuffle_subset():
-			random.shuffle(subset_of_a) # shuffles subset of a in place
+			index1 = random.randint(0, len(subset_of_a)-1)
+			index2 = random.randint(0, len(subset_of_a)-1)
+			subset_of_a[index1], subset_of_a[index2] = subset_of_a[index2], subset_of_a[index1]
+#			random.shuffle(subset_of_a) # shuffles subset of a in place
 			return hamming_distance_with_info(subset_of_a, subset_of_b)
 
 		new_distance, new_info = shuffle_subset()
@@ -122,12 +126,21 @@ class TSPSolver():
 
 		self.population[a] = tuple(changed_individual)
 
+	def rotate_solutions(self):
+		first_solution = self.population[0]
+		value_of_reference = first_solution[0]
+		for i in range(1, len(self.population)):
+			point_of_reference = self.population[i].index(value_of_reference)
+			self.population[i] = collections.deque(self.population[i])
+			self.population[i].rotate(point_of_reference + 1)
+
 	def run(self, number_of_individuals=25, iterations=200, heuristics_percents=(0.2, 0.7, 0.1)):
 		# hotfix, will rewrite later
 		self.best_solution = random_permutation(self.indexes)
 		self.best_solution_cost = single_path_cost(self.best_solution, self.weights)
 
 		self.generate_initial_population(number_of_individuals, heuristics_percents)
+		#self.rotate_solutions()
 		self.determine_initial_light_intensities()
 
 		print('Population of {0} individuals:'.format(number_of_individuals))
@@ -137,15 +150,16 @@ class TSPSolver():
 		print(single_path_cost(self.best_solution, self.weights))
 
 		individuals_indexes = range(number_of_individuals)
-		n = 0
-		while n < iterations:  # other stop conditions?
+		self.n = 0
+		while self.n < iterations:  # other stop conditions?
 			for i in individuals_indexes:
 				for j in individuals_indexes:
-					if self.light_intensities[i] < self.light_intensities[j] and hamming_distance(self.population[i], self.population[j]) < 10:
+					#if self.light_intensities[i] < self.light_intensities[j] and hamming_distance(self.population[i], self.population[j]) < 10:
+					if self.light_intensities[i] < self.light_intensities[j]:
 						self.move_individual(i, j) # move i to j
 						self.light_intensities[i] = self.f(self.population[i])
 			self.find_global_optimum()
-			n += 1
+			self.n += 1
 
 		print(self.best_solution)
 		print(single_path_cost(self.best_solution, self.weights))
