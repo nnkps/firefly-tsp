@@ -123,6 +123,10 @@ class TSPSolver():
 		self.population[a] = tuple(changed_individual)
 
 	def run(self, number_of_individuals=25, iterations=200, heuristics_percents=(0.2, 0.7, 0.1)):
+		# hotfix, will rewrite later
+		self.best_solution = random_permutation(self.indexes)
+		self.best_solution_cost = single_path_cost(self.best_solution, self.weights)
+
 		self.generate_initial_population(number_of_individuals, heuristics_percents)
 		self.determine_initial_light_intensities()
 
