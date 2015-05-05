@@ -4,6 +4,7 @@
             'ui.bootstrap',
             'ui.utils',
             'ui.router',
+            'ui.slider',
             'ngAnimate',
             'ngResource',
             'templates',

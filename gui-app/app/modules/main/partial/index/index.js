@@ -1,46 +1,101 @@
 (function () {
     angular.module('tsp.main').controller('IndexCtrl', IndexCtrl);
 
-    IndexCtrl.$inject = ['SolverService'];
+    IndexCtrl.$inject = ['SolverService', '$scope', '$q'];
 
-    function IndexCtrl(SolverService) {
+    function IndexCtrl(SolverService, $scope, $q) {
         var vm = this;
         var id;
         vm.run = run;
-
+        vm.addConfiguration = addConfiguration;
+        vm.configurations = [];
         vm.parameters = {
-            number_of_individuals: 25,
-            alpha: 1,
-            beta: 1,
-            gamma: 1,
-            iterations: 200,
-            number_of_cities: 20
+            tsplib_data: ''
         };
+        vm.results = [];
 
-        vm.nodes = [
-            {x: 100, y: 100},
-            {x: 200, y: 230},
-            {x: 90, y: 129},
-            {x: 100, y: 220},
-            {x: 79, y: 100}
-        ];
+
+        $scope.$watch('vm.configurations', function (newData) {
+            _.forEach(newData, function (c) {
+                var firstPart = c.slider[0];
+                var secondPart = c.slider[1];
+
+                c.heurestics = {
+                    nearest_neighbour: Math.round(firstPart * 100) / 100,
+                    nearest_insertion: Math.round((1 - secondPart) * 100) / 100,
+                    random: Math.round((secondPart - firstPart) * 100) / 100
+                }
+
+            })
+        }, true);
+
 
         function run() {
-            SolverService.run(vm.parameters, function (data) {
-                vm.nodes = data.route;
-                startPolling(data.id);
+            var jobs = [];
+            _.forEach(vm.configurations, function (conf) {
+                var request = {
+                    tsplib_data: vm.parameters.tsplib_data,
+                    number_of_individuals: conf.number_of_individuals,
+                    iterations: conf.iterations,
+                    heurestics: conf.heurestics
+                };
+
+                var deferred = $q.defer();
+                SolverService.run(request, function (data) {
+                    deferred.resolve(data);
+                });
+                jobs.push(deferred.promise)
             });
+
+
+            $q.all(jobs).then(function (result) {
+                vm.results = result;
+                startPolling(result);
+            })
+
         }
 
-        function startPolling(id) {
+        function addConfiguration() {
+            vm.configurations.push({
+                number_of_individuals: 25,
+                iterations: 200,
+                slider: [0.3, 0.6],
+                heurestics: {
+                    nearest_neighbour: 0.2,
+                    nearest_insertion: 0.6,
+                    random: 0.2
+                }
+            })
+        }
+
+        function startPolling(confs) {
             var interval = setInterval(function () {
-                SolverService.state({id: id}, function (data) {
-                    vm.nodes = data.route;
-                    if (data.done === true) {
-                        clearInterval(interval);
+                var results = [];
+
+
+                _.forEach(confs, function (c) {
+                    var deferred = $q.defer();
+
+                    SolverService.state({id: c.id}, function (data) {
+                        deferred.resolve(data);
+                    });
+
+                    results.push(deferred.promise);
+                });
+
+                $q.all(results).then(function (results) {
+                    vm.results = results;
+
+                    var allDone = _.every(results, function (r) {
+                        return r.done
+                    });
+
+                    if (allDone) {
+                        clearInterval(interval)
                     }
-                })
-            }, 100);
+                });
+
+            }, 300);
         }
 
     }

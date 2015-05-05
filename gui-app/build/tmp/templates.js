@@ -11,83 +11,83 @@ module.run(["$templateCache", function($templateCache) {
     "        <div class=\"row\">\n" +
     "            <div class=\"col-lg-12\">\n" +
     "                <form class=\"form-horizontal\">\n" +
-    "                    <div class=\"form-group\">\n" +
-    "                        <label for=\"fCount\" class=\"col-sm-2 control-label\">Firefly count:</label>\n" +
+    "                    <div class=\"panel panel-info\">\n" +
+    "                        <div class=\"panel-heading\">Main configuration</div>\n" +
+    "                        <div class=\"panel-body\">\n" +
+    "                            <div class=\"form-group\">\n" +
+    "                                <label for=\"fCount\" class=\"col-sm-2 control-label\">TSP input file:</label>\n" +
     "\n" +
-    "                        <div class=\"col-sm-10\">\n" +
-    "                            <input type=\"number\" class=\"form-control\" id=\"fCount\"\n" +
-    "                                   ng-model=\"vm.parameters.number_of_individuals\">\n" +
+    "                                <div class=\"col-sm-10\">\n" +
+    "                                    <textarea class=\"form-control\" id=\"fInputFile\" ng-model=\"vm.parameters.tsplib_data\"\n" +
+    "                                              rows=\"4\"/>\n" +
+    "                                </div>\n" +
+    "                            </div>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
-    "                    <div class=\"form-group\">\n" +
-    "                        <label for=\"fCount2\" class=\"col-sm-2 control-label\">Number of cities:</label>\n" +
     "\n" +
-    "                        <div class=\"col-sm-10\">\n" +
-    "                            <input type=\"number\" class=\"form-control\" id=\"fCount2\"\n" +
-    "                                   ng-model=\"vm.parameters.number_of_cities\">\n" +
-    "                        </div>\n" +
-    "                    </div>\n" +
-    "                    <!--<div class=\"form-group\">-->\n" +
-    "                    <!--<label for=\"fFactorAlpha\" class=\"col-sm-2 control-label\">Factor &alpha;:</label>-->\n" +
     "\n" +
-    "                    <!--<div class=\"col-sm-10\">-->\n" +
-    "                    <!--<input type=\"number\" class=\"form-control\" id=\"fFactorAlpha\" ng-model=\"vm.parameters.alpha\">-->\n" +
-    "                    <!--</div>-->\n" +
-    "                    <!--</div>-->\n" +
-    "                    <!--<div class=\"form-group\">-->\n" +
-    "                    <!--<label for=\"fFactorBeta\" class=\"col-sm-2 control-label\">Factor &beta;:</label>-->\n" +
+    "                    <div class=\"panel panel-info\" ng-repeat=\"c in vm.configurations\">\n" +
+    "                        <div class=\"panel-heading\">Configuration {{$index + 1}}.</div>\n" +
+    "                        <div class=\"panel-body\">\n" +
+    "                            <div class=\"form-group\">\n" +
+    "                                <label for=\"fCount\" class=\"col-sm-2 control-label\">Firefly count:</label>\n" +
     "\n" +
-    "                    <!--<div class=\"col-sm-10\">-->\n" +
-    "                    <!--<input type=\"number\" class=\"form-control\" id=\"fFactorBeta\" ng-model=\"vm.parameters.beta\">-->\n" +
-    "                    <!--</div>-->\n" +
-    "                    <!--</div>-->\n" +
-    "                    <!--<div class=\"form-group\">-->\n" +
-    "                    <!--<label for=\"fFactorGamma\" class=\"col-sm-2 control-label\">Factor &gamma;:</label>-->\n" +
+    "                                <div class=\"col-sm-10\">\n" +
+    "                                    <input type=\"number\" class=\"form-control\" id=\"fCount\"\n" +
+    "                                           ng-model=\"c.number_of_individuals\">\n" +
+    "                                </div>\n" +
+    "                            </div>\n" +
+    "                            <div class=\"form-group\">\n" +
+    "                                <label for=\"fIterationsCount\" class=\"col-sm-2 control-label\">Iterations count:</label>\n" +
     "\n" +
-    "                    <!--<div class=\"col-sm-10\">-->\n" +
-    "                    <!--<input type=\"number\" class=\"form-control\" id=\"fFactorGamma\" ng-model=\"vm.parameters.gamma\">-->\n" +
-    "                    <!--</div>-->\n" +
-    "                    <!--</div>-->\n" +
+    "                                <div class=\"col-sm-10\">\n" +
+    "                                    <input type=\"number\" class=\"form-control\" id=\"fIterationsCount\"\n" +
+    "                                           ng-model=\"c.iterations\">\n" +
+    "                                </div>\n" +
+    "                            </div>\n" +
+    "                            <div class=\"form-group\">\n" +
+    "                                <label class=\"col-sm-2 control-label\">Heuristics configuration:</label>\n" +
     "\n" +
-    "                    <div class=\"form-group\">\n" +
-    "                        <label for=\"fIterationsCount\" class=\"col-sm-2 control-label\">Iterations count:</label>\n" +
+    "                                <div class=\"col-sm-10\">\n" +
+    "                                    <div style=\"margin-top: 10px\" ui-slider=\"{range: true}\" min=\"0\" max=\"1.00\"\n" +
+    "                                         step=\"0.01\" use-decimals ng-model=\"c.slider\"></div>\n" +
+    "                                    <div style=\"margin-top: 10px\">\n" +
+    "                                        <span class=\"label label-default\">Nearest neighbour: {{c.heurestics.nearest_neighbour}}</span>\n" +
+    "                                        <span class=\"label label-default\">Nearest insertion: {{c.heurestics.nearest_insertion}}</span>\n" +
+    "                                        <span class=\"label label-default\">Random: {{c.heurestics.random}}</span>\n" +
+    "                                    </div>\n" +
+    "                                </div>\n" +
+    "                            </div>\n" +
     "\n" +
-    "                        <div class=\"col-sm-10\">\n" +
-    "                            <input type=\"number\" class=\"form-control\" id=\"fIterationsCount\"\n" +
-    "                                   ng-model=\"vm.parameters.iterations\">\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                    <div class=\"form-group\">\n" +
     "                        <div class=\"col-sm-offset-2 col-sm-10 text-center\">\n" +
-    "                            <button type=\"submit\" class=\"btn btn-default\" ng-click=\"vm.run()\">Run It</button>\n" +
+    "                            <button type=\"submit\" class=\"btn btn-default\" ng-click=\"vm.addConfiguration()\">Add\n" +
+    "                                configration\n" +
+    "                            </button>\n" +
+    "                            <button type=\"submit\" class=\"btn btn-primary\" ng-click=\"vm.run()\">Run It</button>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </form>\n" +
-    "\n" +
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
-    "            <div class=\"col-lg-12\">\n" +
-    "                <graph nodes=\"vm.nodes\"></graph>\n" +
+    "            <div class=\"col-lg-6\" ng-repeat=\"r in vm.results\">\n" +
+    "                <div class=\"panel panel-default\">\n" +
+    "                    <div class=\"panel-heading\">\n" +
+    "                        <span>Configuration {{$index + 1}}</span>\n" +
+    "                        <span class=\"label label-danger\">Solution: {{r.route_cost}}</span>\n" +
+    "                        <span class=\"label label-default\" ng-show=\"!r.done\">Running...</span>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"panel-body\">\n" +
+    "                        <graph nodes=\"r.route\" class=\"graph-workspace\"></graph>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
+    "\n" +
     "    </div>\n" +
-    "\n" +
-    "</div>\n" +
-    "");
-}]);
-})();
-
-(function(module) {
-try { module = angular.module("templates"); }
-catch(err) { module = angular.module("templates", []); }
-module.run(["$templateCache", function($templateCache) {
-  "use strict";
-  $templateCache.put("modules/main/directive/graph/graph.html",
-    "<div id=\"graph-workspace\">\n" +
-    "\n" +
-    "\n" +
-    "</div>\n" +
     "");
 }]);
 })();

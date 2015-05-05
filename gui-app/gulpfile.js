@@ -110,7 +110,7 @@ gulp.task('html', function () {
 // 'build/tmp/templates.js'
     return gulp.src(config.index)
         .pipe(assets)
-        .pipe($.sourcemaps.init())
+        //.pipe($.sourcemaps.init())
         .pipe($.if('**/*app.js', $.ngAnnotate()))
         .pipe($.if('**/*.js', $.uglify({
             mangle: false

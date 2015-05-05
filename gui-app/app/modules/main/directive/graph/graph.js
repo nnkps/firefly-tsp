@@ -4,19 +4,17 @@
     function GraphDirective() {
         return {
             restrict: 'E',
-            replace: true,
             scope: {
                 nodes: "=nodes"
             },
-            templateUrl: 'modules/main/directive/graph/graph.html',
             link: function ($scope, element, attrs, fn) {
 
-                var width = $('#graph-workspace').width();
-                var height = $('#graph-workspace').height();
+                var width = $(element).width();
+                var height = $(element).height();
                 var path;
                 var circle;
 
-                var svg = d3.select("#graph-workspace").append("svg:svg")
+                var svg = d3.select($(element).get(0)).append("svg:svg")
                     .attr("width", width)
                     .attr("height", height);
 
@@ -36,10 +34,10 @@
 
                 function tick() {
                     path.attr("d", function (d) {
-                        var sourceX = Number(d.source.x) * 10;
-                        var sourceY = Number(d.source.y) * 10;
-                        var targetX = Number(d.target.x) * 10;
-                        var targetY = Number(d.target.y) * 10;
+                        var sourceX = Number(d.source.x) * 3;
+                        var sourceY = Number(d.source.y) * 3;
+                        var targetX = Number(d.target.x) * 3;
+                        var targetY = Number(d.target.y) * 3;
 
                         //var dx = d.target.x - d.source.x,
                         //    dy = d.target.y - d.source.y,
@@ -72,10 +70,10 @@
                         .enter().append("svg:circle")
                         .attr("r", 6)
                         .attr("cx", function (d) {
-                            return Number(d.x) * 10;
+                            return Number(d.x) * 3;
                         })
                         .attr("cy", function (d) {
-                            return Number(d.y) * 10;
+                            return Number(d.y) * 3;
                         });
 
                     tick();
