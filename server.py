@@ -54,7 +54,7 @@ def get_state(id):
     return jsonify(route=map_locations_to_json(new_locations), route_cost=route_cost, done=done, iteration=solver.n)
 
 def generate_hash():
-    return hashlib.md5(str(time())).hexdigest()
+    return hashlib.md5(str(time()).encode('utf-8')).hexdigest()
 
 def run_in_thread(key, locations, params):
     def target(key, locations, params):

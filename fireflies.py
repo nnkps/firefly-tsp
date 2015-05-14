@@ -3,6 +3,7 @@ import math
 import itertools
 import operator
 from heuristics import NearestInsertion, NearestNeighbour
+import collections
 
 def cartesian_distance(a, b):
 	"a and b should be tuples, computes distance between two cities"
@@ -16,7 +17,7 @@ def random_permutation(iterable, r=None):
 	"returns new tuple with random permutation of iterable"
 	pool = tuple(iterable)
 	r = len(pool) if r is None else r
-	return tuple(random.sample(pool, r))
+	return list(random.sample(pool, r))
 
 def single_path_cost(path, distances):
 	"returns total distance of path"
@@ -56,18 +57,13 @@ class TSPSolver():
 
 	def f(self, individual): # our objective function? lightness?
 		"objective function - describes lightness of firefly"
-		return 1 / single_path_cost(individual, self.weights)
-
-	# def lightness_function(self, gamma):  # ?
-	# 	def f(i, r):
-	# 		return i * math.exp(-gamma * r**2)
-	# 	return f
+		return single_path_cost(individual, self.weights)
 
 	def determine_initial_light_intensities(self):
 		"initializes light intensities"
 		self.light_intensities = [self.f(x) for x in self.population]
 
-	def generate_initial_population(self, number_of_individuals, heuristics_percents):
+	def generate_initial_population(self, number_of_individuals, heuristics_percents,):
 		"generates population of permutation of individuals"
 		# TODO: this part is wrong!
 		# heuristics return solutions, while we need list of permutations of indexes
@@ -80,18 +76,11 @@ class TSPSolver():
 		second_heuristic_part = self.second_heuristic.generate_population(second_heuristic_part_limit)
 		random_part = [random_permutation(self.indexes) for i in range(random_part_limit)]
 
-		# first_heuristic_part_limit = int(0.7 * number_of_individuals)
-		# random_part_limit = number_of_individuals - first_heuristic_part_limit
-		# first_heuristic_part = self.first_heuristic.generate_population(first_heuristic_part_limit)
-		# random_part = [random_permutation(self.indexes) for i in range(random_part_limit)]
-
-		# self.population = random_part + first_heuristic_part
-
 		self.population = random_part + first_heuristic_part + second_heuristic_part
 
 	def find_global_optimum(self):
 		"finds the brightest firefly"
-		index = self.light_intensities.index(max(self.light_intensities))
+		index = self.light_intensities.index(min(self.light_intensities))
 		self.best_solution = self.population[index]
 		self.best_solution_cost = single_path_cost(self.best_solution, self.weights)
 
@@ -106,9 +95,12 @@ class TSPSolver():
 		subset_of_b = subset_to_change(self.population[b])
 
 		def shuffle_subset():
-			index1 = random.randint(0, len(subset_of_a)-1)
-			index2 = random.randint(0, len(subset_of_a)-1)
-			subset_of_a[index1], subset_of_a[index2] = subset_of_a[index2], subset_of_a[index1]
+			random_index = random.randint(0, len(subset_of_b) - 1)
+			value_to_copy = subset_of_b[random_index]
+
+			index_to_move = subset_of_a.index(value_to_copy)
+			subset_of_a[random_index] = value_to_copy
+			subset_of_a[index_to_move], subset_of_a[random_index] = subset_of_a[random_index], subset_of_a[index_to_move]
 #			random.shuffle(subset_of_a) # shuffles subset of a in place
 			return hamming_distance_with_info(subset_of_a, subset_of_b)
 
@@ -124,43 +116,62 @@ class TSPSolver():
 				el = subset_of_a.pop(0)
 			changed_individual.append(el)
 
-		self.population[a] = tuple(changed_individual)
+		self.population[a] = changed_individual
 
-	def rotate_solutions(self):
-		first_solution = self.population[0]
-		value_of_reference = first_solution[0]
+	def move_firefly(self, a, r):
+		number_of_swaps = random.randint(2, r)
+		for i in range(number_of_swaps):
+			random_index = lambda: random.randint(0, len(self.population[a]) - 1) 
+			index1 = random_index()
+			index2 = random_index()
+			self.population[a][index1], self.population[a][index2] = self.population[a][index2], self.population[a][index1]
+
+	def rotate_single_solution(self, i, value_of_reference):
+		point_of_reference = self.population[i].index(value_of_reference)
+		self.population[i] = collections.deque(self.population[i])
+		self.population[i].rotate(point_of_reference + 1)
+		self.population[i] = list(self.population[i])
+
+	def rotate_solutions(self, value_of_reference):
+		# TODO 
 		for i in range(1, len(self.population)):
-			point_of_reference = self.population[i].index(value_of_reference)
-			self.population[i] = collections.deque(self.population[i])
-			self.population[i].rotate(point_of_reference + 1)
+			self.rotate_single_solution(i, value_of_reference)
 
-	def run(self, number_of_individuals=25, iterations=200, heuristics_percents=(0.2, 0.7, 0.1)):
+	def I(self, index, gamma, r):
+		return self.light_intensities[index] * math.exp(gamma * r**2)
+
+	def run(self, number_of_individuals=25, iterations=200, heuristics_percents=(0.2, 0.7, 0.1), beta=20, gamma=0.1):
+		"gamma is parameter for light intensities, beta is size of neighbourhood according to hamming distance"
 		# hotfix, will rewrite later
 		self.best_solution = random_permutation(self.indexes)
 		self.best_solution_cost = single_path_cost(self.best_solution, self.weights)
 
 		self.generate_initial_population(number_of_individuals, heuristics_percents)
-		#self.rotate_solutions()
+		value_of_reference = self.population[0][0]
+		self.rotate_solutions(value_of_reference)
 		self.determine_initial_light_intensities()
 
-		print('Population of {0} individuals:'.format(number_of_individuals))
+		# print('Population of {0} individuals:'.format(number_of_individuals))
 
 		self.find_global_optimum()
-		print(self.best_solution)
-		print(single_path_cost(self.best_solution, self.weights))
+		# print(self.best_solution)
+		# print(single_path_cost(self.best_solution, self.weights))
 
 		individuals_indexes = range(number_of_individuals)
 		self.n = 0
 		while self.n < iterations:  # other stop conditions?
 			for i in individuals_indexes:
 				for j in individuals_indexes:
-					#if self.light_intensities[i] < self.light_intensities[j] and hamming_distance(self.population[i], self.population[j]) < 10:
-					if self.light_intensities[i] < self.light_intensities[j]:
+					r = hamming_distance(self.population[i], self.population[j])
+					# if self.I(i, r) < self.I(j, r) and r < beta:
+					if self.I(i, gamma, r) > self.I(j, gamma, r) and r < beta:
 						self.move_individual(i, j) # move i to j
+						# self.move_firefly(i, r)
+						self.rotate_single_solution(i, value_of_reference)
 						self.light_intensities[i] = self.f(self.population[i])
 			self.find_global_optimum()
 			self.n += 1
 
-		print(self.best_solution)
-		print(single_path_cost(self.best_solution, self.weights))
+		# print(self.best_solution)
+		# print(single_path_cost(self.best_solution, self.weights))
 		return self.best_solution
