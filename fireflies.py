@@ -79,10 +79,17 @@ class TSPSolver():
 	def find_global_optimum(self):
 		"finds the brightest firefly"
 		index = self.light_intensities.index(min(self.light_intensities))
-		if self.population[index] < self.best_solution: 
+		new_cost = self.f(self.population[index])
+		if new_cost < self.best_solution_cost: 
 			self.best_solution = [firefly for firefly in self.population[index]]
-			self.best_solution_cost = single_path_cost(self.best_solution, self.weights)
-		print(self.best_solution_cost)
+			self.best_solution_cost = new_cost
+		# print(self.best_solution_cost)
+
+	def check_if_best_solution(self, index):
+		new_cost = self.light_intensities[index]
+		if new_cost < self.best_solution_cost: 
+			self.best_solution = [firefly for firefly in self.population[index]]
+			self.best_solution_cost = new_cost
 
 	def move_firefly(self, a, b, r):
 		"moving firefly a to b in less than r swaps"
@@ -119,7 +126,7 @@ class TSPSolver():
 	def I(self, index, r):
 		return self.light_intensities[index] * math.exp(-1.0 * self.absorptions[index] * r**2)
 
-	def run(self, number_of_individuals=25, iterations=100, heuristics_percents=(0.0, 0.0, 1.0), beta=0.7):
+	def run(self, number_of_individuals=100, iterations=1000, heuristics_percents=(0.5, 0.5, 0.0), beta=1.0):
 		"gamma is parameter for light intensities, beta is size of neighbourhood according to hamming distance"
 		# hotfix, will rewrite later
 		self.best_solution = random_permutation(self.indexes)
@@ -136,6 +143,7 @@ class TSPSolver():
 		# print('Population of {0} individuals:'.format(number_of_individuals))
 
 		self.find_global_optimum()
+		print(self.best_solution_cost)
 		# print(self.best_solution)
 		# print(single_path_cost(self.best_solution, self.weights))
 
@@ -160,8 +168,17 @@ class TSPSolver():
 						# print("------------------")
 						# self.rotate_single_solution(i, value_of_reference)
 						self.light_intensities[i] = self.f(self.population[i])
-			self.find_global_optimum()
+						
+						self.check_if_best_solution(i)
+
+			# self.find_global_optimum()
 			self.n += 1
+			if self.n % 100 == 0:
+				print(self.n)
+				print(self.best_solution_cost)
+		
+
+		print(self.best_solution_cost)
 
 		# print(self.best_solution)
 		# print(single_path_cost(self.best_solution, self.weights))
