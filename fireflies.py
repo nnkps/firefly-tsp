@@ -72,22 +72,33 @@ class TSPSolver():
 		random_part = [random_permutation(self.indexes) for i in range(random_part_limit)]
 
 		self.population = random_part + first_heuristic_part + second_heuristic_part
+		self.absorptions = []
+		for i in range(len(self.population)):
+			self.absorptions.append(random.random() * 0.9 + 0.1)
 
 	def find_global_optimum(self):
 		"finds the brightest firefly"
 		index = self.light_intensities.index(min(self.light_intensities))
-		self.best_solution = self.population[index]
-		self.best_solution_cost = single_path_cost(self.best_solution, self.weights)
+		if self.population[index] < self.best_solution: 
+			self.best_solution = [firefly for firefly in self.population[index]]
+			self.best_solution_cost = single_path_cost(self.best_solution, self.weights)
+		print(self.best_solution_cost)
 
 	def move_firefly(self, a, b, r):
 		"moving firefly a to b in less than r swaps"
-		number_of_swaps = random.randint(2, r)
+		number_of_swaps = random.randint(0, r - 2)
+		# print("Ilosc swapow {0}".format(number_of_swaps))
 		distance, diff_info = hamming_distance_with_info(self.population[a], self.population[b])
 
 		while number_of_swaps > 0:
+			distance, diff_info = hamming_distance_with_info(self.population[a], self.population[b])
 			random_index = random.choice([i for i in range(len(diff_info)) if diff_info[i]])
 			value_to_copy = self.population[b][random_index]
 			index_to_move = self.population[a].index(value_to_copy)
+
+			if number_of_swaps == 1 and self.population[a][index_to_move] == self.population[b][random_index] and self.population[a][random_index] == self.population[b][index_to_move]:
+				break
+
 			self.population[a][random_index], self.population[a][index_to_move] = self.population[a][index_to_move], self.population[a][random_index]
 			if self.population[a][index_to_move] == self.population[b][index_to_move]:
 				number_of_swaps -= 1
@@ -96,17 +107,19 @@ class TSPSolver():
 	def rotate_single_solution(self, i, value_of_reference):
 		point_of_reference = self.population[i].index(value_of_reference)
 		self.population[i] = collections.deque(self.population[i])
-		self.population[i].rotate(point_of_reference + 1)
+		l = len(self.population[i])
+		number_of_rotations = (l - point_of_reference) % l
+		self.population[i].rotate(number_of_rotations)
 		self.population[i] = list(self.population[i])
 
 	def rotate_solutions(self, value_of_reference):
 		for i in range(1, len(self.population)):
 			self.rotate_single_solution(i, value_of_reference)
 
-	def I(self, index, gamma, r):
-		return self.light_intensities[index] * math.exp(gamma * r**2)
+	def I(self, index, r):
+		return self.light_intensities[index] * math.exp(-1.0 * self.absorptions[index] * r**2)
 
-	def run(self, number_of_individuals=25, iterations=200, heuristics_percents=(0.2, 0.7, 0.1), beta=20, gamma=0.1):
+	def run(self, number_of_individuals=25, iterations=100, heuristics_percents=(0.0, 0.0, 1.0), beta=0.7):
 		"gamma is parameter for light intensities, beta is size of neighbourhood according to hamming distance"
 		# hotfix, will rewrite later
 		self.best_solution = random_permutation(self.indexes)
@@ -115,6 +128,9 @@ class TSPSolver():
 		self.generate_initial_population(number_of_individuals, heuristics_percents)
 		value_of_reference = self.population[0][0]
 		self.rotate_solutions(value_of_reference)
+		# print(self.population)
+		# for firefly in self.population:
+		# 	print(single_path_cost(firefly, self.weights))
 		self.determine_initial_light_intensities()
 
 		# print('Population of {0} individuals:'.format(number_of_individuals))
@@ -125,15 +141,24 @@ class TSPSolver():
 
 		individuals_indexes = range(number_of_individuals)
 		self.n = 0
+		neighbourhood = beta * len(individuals_indexes)
 		while self.n < iterations:  # other stop conditions?
 			for i in individuals_indexes:
 				for j in individuals_indexes:
 					r = hamming_distance(self.population[i], self.population[j])
 					# if self.I(i, r) < self.I(j, r) and r < beta:
-					if self.I(i, gamma, r) > self.I(j, gamma, r) and r < beta:
-						# self.move_individual(i, j) # move i to j
+					if self.I(i, r) > self.I(j, r) and r < neighbourhood:
+						# print("na ilu sie roznia {0}".format(r))
+						# # self.move_individual(i, j) # move i to j
+						# print("Przed zblizaniem")
+						# print(self.population[i])
+						# print(self.population[j])
 						self.move_firefly(i, j, r)
-						self.rotate_single_solution(i, value_of_reference)
+						# print("Zblizone")
+						# print(self.population[i])
+						# print(self.population[j])
+						# print("------------------")
+						# self.rotate_single_solution(i, value_of_reference)
 						self.light_intensities[i] = self.f(self.population[i])
 			self.find_global_optimum()
 			self.n += 1
