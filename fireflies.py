@@ -36,11 +36,6 @@ def hamming_distance(a, b):
 	dist, info = hamming_distance_with_info(a, b)
 	return dist
 
-# def hamming_distance(a, b):
-# 	"return number of places where two sequences differ"
-# 	return sum(sequences_differ(a, b))
-
-
 class TSPSolver():
 	def __init__(self, points):
 		"points is list of objects of type City"
@@ -84,47 +79,19 @@ class TSPSolver():
 		self.best_solution = self.population[index]
 		self.best_solution_cost = single_path_cost(self.best_solution, self.weights)
 
-	def move_individual(self, a, b):
-		"moving a solution to b solution"
-		# UGLY :(
-		# will rewrite later
-		distance, diff_info = hamming_distance_with_info(self.population[a], self.population[b])
-		subset_to_change = lambda seq: [seq[i] for i in self.indexes if diff_info[i]]
-
-		subset_of_a = subset_to_change(self.population[a])
-		subset_of_b = subset_to_change(self.population[b])
-
-		def shuffle_subset():
-			random_index = random.randint(0, len(subset_of_b) - 1)
-			value_to_copy = subset_of_b[random_index]
-
-			index_to_move = subset_of_a.index(value_to_copy)
-			subset_of_a[random_index] = value_to_copy
-			subset_of_a[index_to_move], subset_of_a[random_index] = subset_of_a[random_index], subset_of_a[index_to_move]
-#			random.shuffle(subset_of_a) # shuffles subset of a in place
-			return hamming_distance_with_info(subset_of_a, subset_of_b)
-
-		new_distance, new_info = shuffle_subset()
-		while new_distance < 2 or new_distance > distance:
-			new_distance, new_info = shuffle_subset()
-
-		changed_individual = []
-		for i in self.indexes:
-			if not diff_info[i]:
-				el = self.population[a][i]
-			else:
-				el = subset_of_a.pop(0)
-			changed_individual.append(el)
-
-		self.population[a] = changed_individual
-
-	def move_firefly(self, a, r):
+	def move_firefly(self, a, b, r):
+		"moving firefly a to b in less than r swaps"
 		number_of_swaps = random.randint(2, r)
-		for i in range(number_of_swaps):
-			random_index = lambda: random.randint(0, len(self.population[a]) - 1) 
-			index1 = random_index()
-			index2 = random_index()
-			self.population[a][index1], self.population[a][index2] = self.population[a][index2], self.population[a][index1]
+		distance, diff_info = hamming_distance_with_info(self.population[a], self.population[b])
+
+		while number_of_swaps > 0:
+			random_index = random.choice([i for i in range(len(diff_info)) if diff_info[i]])
+			value_to_copy = self.population[b][random_index]
+			index_to_move = self.population[a].index(value_to_copy)
+			self.population[a][random_index], self.population[a][index_to_move] = self.population[a][index_to_move], self.population[a][random_index]
+			if self.population[a][index_to_move] == self.population[b][index_to_move]:
+				number_of_swaps -= 1
+			number_of_swaps -= 1
 
 	def rotate_single_solution(self, i, value_of_reference):
 		point_of_reference = self.population[i].index(value_of_reference)
@@ -133,7 +100,6 @@ class TSPSolver():
 		self.population[i] = list(self.population[i])
 
 	def rotate_solutions(self, value_of_reference):
-		# TODO 
 		for i in range(1, len(self.population)):
 			self.rotate_single_solution(i, value_of_reference)
 
@@ -165,8 +131,8 @@ class TSPSolver():
 					r = hamming_distance(self.population[i], self.population[j])
 					# if self.I(i, r) < self.I(j, r) and r < beta:
 					if self.I(i, gamma, r) > self.I(j, gamma, r) and r < beta:
-						self.move_individual(i, j) # move i to j
-						# self.move_firefly(i, r)
+						# self.move_individual(i, j) # move i to j
+						self.move_firefly(i, j, r)
 						self.rotate_single_solution(i, value_of_reference)
 						self.light_intensities[i] = self.f(self.population[i])
 			self.find_global_optimum()
