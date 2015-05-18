@@ -66,7 +66,12 @@ module.run(["$templateCache", function($templateCache) {
     "                            <button type=\"submit\" class=\"btn btn-default\" ng-click=\"vm.addConfiguration()\">Add\n" +
     "                                configration\n" +
     "                            </button>\n" +
-    "                            <button type=\"submit\" class=\"btn btn-primary\" ng-click=\"vm.run()\">Run It</button>\n" +
+    "                            <button type=\"submit\" class=\"btn btn-primary\" ng-click=\"vm.run()\"\n" +
+    "                                    ng-show=\"!vm.running && vm.configurations.length > 0\">Run It\n" +
+    "                            </button>\n" +
+    "                            <button type=\"submit\" class=\"btn btn-danger\" ng-click=\"vm.stop()\"\n" +
+    "                                    ng-show=\"vm.running && vm.configurations.length > 0\">Stop It\n" +
+    "                            </button>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </form>\n" +
@@ -87,7 +92,13 @@ module.run(["$templateCache", function($templateCache) {
     "            </div>\n" +
     "        </div>\n" +
     "\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-lg-12\">\n" +
+    "                <chart configurations=\"vm.chartConfig\" results=\"vm.results\"></chart>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
     "    </div>\n" +
+    "</div>\n" +
     "");
 }]);
 })();

@@ -7,12 +7,24 @@
         var vm = this;
         var id;
         vm.run = run;
+        vm.stop = stop;
         vm.addConfiguration = addConfiguration;
         vm.configurations = [];
         vm.parameters = {
             tsplib_data: ''
         };
         vm.results = [];
+        vm.running = false;
+        vm.chartConfig = [];
+
+        var interval = null;
+        var colors = [
+            "rgba(247,221,134,1)",
+            "rgba(235,158,104,1)",
+            "rgba(230,124,116,1)",
+            "rgba(99,98,128,1)",
+            "rgba(78,145,144,1)"
+        ];
 
 
         $scope.$watch('vm.configurations', function (newData) {
@@ -32,13 +44,23 @@
 
         function run() {
             var jobs = [];
+            vm.chartConfig = [];
+            vm.running = true;
+
+            var i = 0;
             _.forEach(vm.configurations, function (conf) {
+                i++;
                 var request = {
                     tsplib_data: vm.parameters.tsplib_data,
                     number_of_individuals: conf.number_of_individuals,
                     iterations: conf.iterations,
                     heurestics: conf.heurestics
                 };
+
+                vm.chartConfig.push({
+                    label: "Configuration " + i,
+                    color: colors[i - 1]
+                });
 
                 var deferred = $q.defer();
                 SolverService.run(request, function (data) {
@@ -69,7 +91,7 @@
         }
 
         function startPolling(confs) {
-            var interval = setInterval(function () {
+            interval = setInterval(function () {
                 var results = [];
 
 
@@ -84,6 +106,9 @@
                 });
 
                 $q.all(results).then(function (results) {
+                    if (!vm.running) {
+                        return;
+                    }
                     vm.results = results;
 
                     var allDone = _.every(results, function (r) {
@@ -91,11 +116,18 @@
                     });
 
                     if (allDone) {
-                        clearInterval(interval)
+                        clearInterval(interval);
+                        vm.running = false;
                     }
                 });
 
             }, 300);
+        }
+
+        function stop() {
+            clearInterval(interval);
+            vm.running = false;
+            vm.results = []
         }
 
     }
