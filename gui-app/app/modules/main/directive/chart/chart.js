@@ -11,8 +11,8 @@
             link: function (scope, element, attrs, fn) {
                 var chart;
 
-                scope.$watch("configurations", function (configurations) {
-                    if (configurations == undefined || configurations.length <= 0) {
+                scope.$watchCollection("configurations", function (configurations) {
+                    if (configurations == undefined) {
                         return;
                     }
 
@@ -39,18 +39,16 @@
                     $(element).children().remove();
                     $(element).append(canvas);
 
-                    console.log(configurations);
-                    console.log(data);
-
                     chart = new Chart(ctx).Line(data, {
                         bezierCurve: false,
                         datasetFill: false
                     });
-                }, true);
+
+                });
 
 
                 scope.$watch("results", function (results) {
-                    if (results == undefined || results.length <= 0) {
+                    if (results == undefined) {
                         return;
                     }
                     var data = _.filter(results, function (x) {

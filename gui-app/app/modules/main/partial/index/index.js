@@ -44,8 +44,9 @@
 
         function run() {
             var jobs = [];
-            vm.chartConfig = [];
+            vm.chartConfig.length = 0;
             vm.running = true;
+            vm.results.lenght = 0;
 
             var i = 0;
             _.forEach(vm.configurations, function (conf) {
@@ -127,7 +128,8 @@
         function stop() {
             clearInterval(interval);
             vm.running = false;
-            vm.results = []
+            vm.results.lenght = 0;
+            vm.chartConf.lenght = 0;
         }
 
     }
