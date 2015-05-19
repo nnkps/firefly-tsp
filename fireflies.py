@@ -151,8 +151,8 @@ class TSPSolver():
 		self.n = 0
 		neighbourhood = beta * len(individuals_indexes)
 		while self.n < iterations:  # other stop conditions?
-			for i in individuals_indexes:
-				for j in individuals_indexes:
+			for j in individuals_indexes:
+				for i in individuals_indexes:
 					r = hamming_distance(self.population[i], self.population[j])
 					# if self.I(i, r) < self.I(j, r) and r < beta:
 					if self.I(i, r) > self.I(j, r) and r < neighbourhood:
