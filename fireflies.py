@@ -70,9 +70,9 @@ class TSPSolver():
 		random_part = [random_permutation(self.indexes) for i in range(random_part_limit)]
 
 		self.population = random_part + first_heuristic_part + second_heuristic_part
-		self.absorptions = []
-		for i in range(len(self.population)):
-			self.absorptions.append(random.random() * 0.9 + 0.1)
+		self.absorptions = [1] * len(self.population)
+		# for i in range(len(self.population)):
+		# 	self.absorptions.append(random.random() * 0.9 + 0.1)
 
 	def check_if_best_solution(self, index):
 		new_cost = self.light_intensities[index]
@@ -121,7 +121,7 @@ class TSPSolver():
 	def I(self, index, r):
 		return self.light_intensities[index] * math.exp(-1.0 * self.absorptions[index] * r**2)
 
-	def run(self, number_of_individuals=100, iterations=200, heuristics_percents=(0.0, 0.0, 1.0), beta=0.7):
+	def run(self, number_of_individuals=100, iterations=300, heuristics_percents=(0.0, 0.0, 1.0), beta=0.7):
 		"gamma is parameter for light intensities, beta is size of neighbourhood according to hamming distance"
 		# hotfix, will rewrite later
 		self.best_solution = random_permutation(self.indexes)
@@ -131,19 +131,24 @@ class TSPSolver():
 		value_of_reference = self.population[0][0]
 		self.rotate_solutions(value_of_reference)
 		self.determine_initial_light_intensities()
+
 		self.find_global_optimum()
 		print(self.best_solution_cost)
 
 		individuals_indexes = range(number_of_individuals)
 		self.n = 0
 		neighbourhood = beta * len(individuals_indexes)
-		while self.n < iterations:
+		while self.n < iterations: 
 			for j in individuals_indexes:
+				intensities = []
 				for i in individuals_indexes:
 					r = hamming_distance(self.population[i], self.population[j])
-					if self.I(i, r) > self.I(j, r) and r < neighbourhood:
-						self.move_firefly(i, j, r)						
-						self.check_if_best_solution(i)
+					if r < neighbourhood and i != j:
+						intensities.append((self.I(i, r), i, r))
+				if intensities:
+					best_firefly = min(intensities, key=lambda x: x[0])
+					self.move_firefly(j, best_firefly[1], best_firefly[2])				
+					self.check_if_best_solution(j)
 
 			self.n += 1
 			if self.n % 100 == 0:
