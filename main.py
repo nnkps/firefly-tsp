@@ -5,6 +5,8 @@ import random
 import matplotlib.pyplot as plt
 from City import *
 
+
+
 def draw(points):
 	points = list(points)
 	points = points + points[:1]
